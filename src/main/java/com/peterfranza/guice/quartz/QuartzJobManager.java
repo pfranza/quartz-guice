@@ -1,5 +1,7 @@
 package com.peterfranza.guice.quartz;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -35,7 +37,7 @@ public class QuartzJobManager {
 
 			ScheduleInterval interval = j.getAnnotation(ScheduleInterval.class);
 			Trigger trigger = TriggerBuilder
-					.newTrigger().withIdentity(j.getSimpleName()+"TriggerId")
+					.newTrigger().withIdentity(j.getSimpleName()+"TriggerId").startAt(getStart(interval.delay()))
 					.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(interval.value())
 							.repeatForever()).build();			
 
@@ -49,7 +51,7 @@ public class QuartzJobManager {
 
 			CronInterval cron = j.getAnnotation(CronInterval.class);
 			Trigger trigger = TriggerBuilder
-					.newTrigger().withIdentity(j.getSimpleName()+"TriggerId")
+					.newTrigger().withIdentity(j.getSimpleName()+"TriggerId").startAt(getStart(cron.delay()))
 					.withSchedule(CronScheduleBuilder.cronSchedule(cron.value())).build();
 			LOG.info("Schedule " + j.getSimpleName() + " @ " + cron.value());
 			scheduler.scheduleJob(jobDetail, trigger);
@@ -58,6 +60,12 @@ public class QuartzJobManager {
 		
 		scheduler.start();
 		LOG.info("Schedular Started");
+	}
+
+	private Date getStart(int delay) {
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.MILLISECOND, delay);
+		return c.getTime();
 	}
 	
 }

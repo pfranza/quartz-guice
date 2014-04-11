@@ -10,5 +10,6 @@ import java.lang.annotation.Target;
 public @interface ScheduleInterval {
 
 	int value() default 60; 
+	int delay() default 0;
 	
 }
