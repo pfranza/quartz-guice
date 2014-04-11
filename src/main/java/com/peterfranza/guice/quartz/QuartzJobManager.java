@@ -18,6 +18,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
 import com.peterfranza.guice.quartz.annotations.CronInterval;
+import com.peterfranza.guice.quartz.annotations.RunOnce;
 import com.peterfranza.guice.quartz.annotations.ScheduleInterval;
 import com.peterfranza.guice.quartz.utils.AnnotatedClassLocator;
 
@@ -54,6 +55,19 @@ public class QuartzJobManager {
 					.newTrigger().withIdentity(j.getSimpleName()+"TriggerId").startAt(getStart(cron.delay()))
 					.withSchedule(CronScheduleBuilder.cronSchedule(cron.value())).build();
 			LOG.info("Schedule " + j.getSimpleName() + " @ " + cron.value());
+			scheduler.scheduleJob(jobDetail, trigger);
+
+		}
+		
+		for(Class<Job> j: classLocator.find(RunOnce.class, Job.class)) {
+			JobDetail jobDetail = JobBuilder.newJob(j).withIdentity(j.getSimpleName()+"Job").build();
+
+			RunOnce once = j.getAnnotation(RunOnce.class);
+
+			Trigger trigger = TriggerBuilder.newTrigger().withIdentity(j.getSimpleName()+"TriggerId")
+					.startAt(getStart(once.delay())).build();
+			
+			LOG.info("Schedule " + j.getSimpleName() + " Once");
 			scheduler.scheduleJob(jobDetail, trigger);
 
 		}

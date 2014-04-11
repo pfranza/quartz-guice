@@ -3,11 +3,12 @@
   <groupId>com.peterfranza</groupId>
   <artifactId>guice-quartz</artifactId>
   <versioning>
-    <release>1.0.1</release>
+    <release>1.0.2</release>
     <versions>
       <version>1.0.0-SNAPSHOT</version>
       <version>1.0.1</version>
+      <version>1.0.2</version>
     </versions>
-    <lastUpdated>20140411121655</lastUpdated>
+    <lastUpdated>20140411123947</lastUpdated>
   </versioning>
 </metadata>
